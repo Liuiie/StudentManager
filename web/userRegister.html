@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <script type="text/javascript" src="js/jquery-3.6.0.js"></script>
+    <style type="text/css">
+        form{
+            width: 400px;
+            height: 200px;
+            border: 1px solid black;
+            text-align: center;
+            margin: 0px auto;
+            border-radius: 10px;
+            background-color: azure;
+        }
+        .msg{
+            text-align: right;
+        }
+        .inContent{
+            text-align: left;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function(){
+            // 判断数据库中该账号是否存在
+            $("[name=username]").blur(function(){
+                var username = $(this).val();
+                $("#username_msg").html("");
+                if (username != ""){
+                    $.get("userServlet",{"username":username,"flag":"selectUserByUsername"},function(obj){
+                        if (!obj){
+                            $("#username_msg").text("√")
+                        } else {
+                            $("#username_msg").text("该用户名已被占用")
+                        }
+                    },"json");
+                }
+            });
+
+            // 判断两次密码是否一致
+            // 当两个密码栏都没有数据时清除提示信息
+            $("[name=password2]").blur(function(){
+                var password1 = $("[name=password1]").val();
+                var password2 = $("[name=password2]").val();
+                if ($.trim(password1) == $.trim(password2)){
+                    $("#pwd1_msg").text("√");
+                    $("#pwd2_msg").text("√");
+                } else {
+                    $("#pwd1_msg").text("两次密码不一致!!!");
+                    $("#pwd2_msg").text("两次密码不一致!!!");
+                }
+                if (password1 == "" && password2 == ""){
+                    $("#pwd1_msg").html("");
+                    $("#pwd2_msg").html("");
+                }
+            });
+            $("[name=password1]").blur(function(){
+                var password1 = $("[name=password1]").val();
+                var password2 = $("[name=password2]").val();
+                if (password1 == "" && password2 == ""){
+                    $("#pwd1_msg").html("");
+                    $("#pwd2_msg").html("");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <form action="userServlet" method="post">
+        <h2>注册</h2>
+        <input type="hidden" name="flag" value="register">
+        <table>
+            <tr>
+                <td class="msg">账号：</td>
+                <td class="inContent">
+                    <input type="text" name="username">
+                </td>
+                <td>
+                    <span id="username_msg"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="msg">密码：</td>
+                <td class="inContent">
+                    <input type="password" name="password1">
+                </td>
+                <td>
+                    <span id="pwd1_msg"></span>
+                </td>
+            </tr><tr>
+            <td class="msg">确认密码：</td>
+            <td class="inContent">
+                <input type="password" name="password2">
+            </td>
+            <td>
+                <span id="pwd2_msg"></span>
+            </td>
+        </tr>
+        </table>
+        <input type="submit" value="提交" style="margin: 6px;">
+        <a href="index.jsp">
+            <input type="button" value="返回" style="margin: 6px;">
+        </a>
+    </form>
+</body>
+</html>
